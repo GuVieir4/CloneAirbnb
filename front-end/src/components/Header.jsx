@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 
-function Header() {
+function Header({user}) {
   return (
     <header className="shadow-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-8">
@@ -37,7 +37,7 @@ function Header() {
           </div>
         </div>
 
-        <Link to="/login">
+        <Link to={user ? "/account" : "/login"}>
           <div className="flex items-center rounded-full border border-gray-300 py-2 pr-4 pl-6 shadow-md gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +67,7 @@ function Header() {
                 />
               </svg>
 
-              <p className="sm:max-w-none max-w-[70px] truncate">Gustavo Henrique</p>
+              {user ? <p className="sm:max-w-none max-w-[70px] truncate">{user.name}</p> : <></>}
           </div>
         </Link>
       </div>
