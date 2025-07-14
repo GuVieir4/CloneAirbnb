@@ -26,15 +26,13 @@ router.get('/', async (req, res) => {
 router.get('/profile', async (req, res) => {
     const { token } = req.cookies;
 
-    if (token) {
+    if (!token) return res.json(null);
+
     try {
-        const userInfo = jwt.verify(token, JWT_SECRET_KEY)
+        const userInfo = jwt.verify(token, JWT_SECRET_KEY);
         res.json(userInfo);
-    } catch {
-        res.status(500).json(error);
-    }
-    } else {
-        res.json(null)
+    } catch (error) {
+        res.status(401).json(null);
     }
 });
 
@@ -54,8 +52,12 @@ router.post('/', async (req, res) => {
         const { _id } = newUserDoc;
         const newUserObj = { name, email, _id };
 
-        const token = jwt.sign(newUserObj, JWT_SECRET_KEY)
-        res.cookie("token", token).json(newUserObj)
+        jwt.sign(newUserObj, JWT_SECRET_KEY, {}, (error, token) => {
+            if (error) throw error;
+
+            res.cookie("token", token).json(newUserObj)   
+        })
+
     } catch (error) {
         res.status(500).json(error)
     }
@@ -89,7 +91,13 @@ router.post('/login', async (req, res) => {
 
     } catch (error) {
         res.status(500).json(error)
+        throw error;
     }
+})
+
+router.post("/logout", async (req, res) => {
+    res.clearCookie("token").json("Deslogado")
+    location.reload();
 })
 
 export default router;

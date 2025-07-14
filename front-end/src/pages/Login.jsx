@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios'
+import { useUserContext } from '../contexts/UserContext';
 
-function Login({user, setUser}) {
+function Login() {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [redirect, setRedirect] = useState(false)
+    const { user, setUser } = useUserContext()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,7 +23,7 @@ function Login({user, setUser}) {
                 setUser(userDoc)
                 setRedirect(true)
             } catch (error) {
-                alert(`Deu um erro ao logar: ${error.response.data}`);
+                alert(`Deu um erro ao logar: `);
             }
         } else {
             alert("Os dados não estão preenchidos.");
