@@ -23,17 +23,18 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/profile', async (req, res) => {
-    const { token } = req.cookies;
+router.get("/profile", async (req, res) => {
+  const { token } = req.cookies;
 
-    if (!token) return res.json(null);
+  if (token) {
+    jwt.verify(token, JWT_SECRET_KEY, {}, (error, userInfo) => {
+      if (error) throw error;
 
-    try {
-        const userInfo = jwt.verify(token, JWT_SECRET_KEY);
-        res.json(userInfo);
-    } catch (error) {
-        res.status(401).json(null);
-    }
+      res.json(userInfo);
+    });
+  } else {
+    res.json(null);
+  }
 });
 
 router.post('/', async (req, res) => {
@@ -97,7 +98,6 @@ router.post('/login', async (req, res) => {
 
 router.post("/logout", async (req, res) => {
     res.clearCookie("token").json("Deslogado")
-    location.reload();
 })
 
 export default router;
